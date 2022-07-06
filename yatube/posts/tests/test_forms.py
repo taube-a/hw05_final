@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from django.conf import settings
 from ..models import Group, Post, Comment
-from ..forms import PostForm, CommentForm
+from ..forms import PostForm
 
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
