@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load user_filters %}
+
+{% block title %} Пост {{ post.text|truncatechars:30 }} {% endblock %}
+
+{% block content %}
+  <div class="row">
+
+    {% include "includes/aside.html" %}
+
+    <div class="col-12 col-md-9">
+      {% include "includes/article.html" with style='display:none'%}
+      {% if user == post.author %}
+      <a class="btn btn-primary" href="{% url 'posts:post_edit' post.pk %}">
+        редактировать запись
+      </a>
+      {% endif %}
+
+      {% if user.is_authenticated %}
+        <div class="card my-4">
+          <h5 class="card-header">Добавить комментарий:</h5>
+          <div class="card-body">
+            <form method="post"
+                  action="{% url 'posts:add_comment' post.pk %}"
+            >
+              {% csrf_token %}
+
+              <div class="form-group mb-2">
+                {% for field in form %}
+                  {{ field|addclass:'form-control' }}
+                {% endfor %}
+
+                {#|addclass:"form-control" #}
+              </div>
+              <button type="submit" class="btn btn-primary">Отправить</button>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+
+      {% for comment in comments %}
+        <div class="media mb-4">
+          <div class="media-body">
+            <h5 class="mt-0">
+              <a href="{% url 'posts:profile' comment.author.username %}">
+                {{ comment.author.username }}
+              </a>
+            </h5>
+              <p>
+               {{ comment.text }}
+              </p>
+            </div>
+          </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  {% include 'includes/paginator.html' %}
+
+{% endblock %}
