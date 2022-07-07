@@ -214,3 +214,11 @@ class PostsPagesTests(TestCase):
             reverse('posts:follow_index')).context['page_obj']
         self.assertIn(author1_post, user_follow_index)
         self.assertNotIn(author2_post, user_follow_index)
+
+    def test_user_cant_follow_or_unfollow_himself(self):
+        self.authorized_client.post(
+            reverse('posts:profile_follow',
+                    kwargs={'username': self.user.username}))
+        user_follow_index = self.authorized_client.get(
+            reverse('posts:follow_index')).context['page_obj']
+        self.assertNotIn(self.post, user_follow_index)

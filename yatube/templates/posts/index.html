@@ -8,14 +8,24 @@
 
     {% include "includes/switcher.html" %}
 
-    {% cache 20 index_page request.user.username %}
+    {% if request.get_full_path == '/' %}
+      {% cache 20 index_page request.user.username %}
+        {% for post in page_obj %}
+          {% include "includes/article.html" %}
+          {% if not forloop.last %}
+            <hr>
+          {% endif %}
+        {% endfor %}
+        {% include 'includes/paginator.html' %}
+      {% endcache %}
+    {% else %}
       {% for post in page_obj %}
-        {% include "includes/article.html" %}
-        {% if not forloop.last %}
-          <hr>
-        {% endif %}
-      {% endfor %}
-      {% include 'includes/paginator.html' %}
-    {% endcache %}
+          {% include "includes/article.html" %}
+          {% if not forloop.last %}
+            <hr>
+          {% endif %}
+        {% endfor %}
+        {% include 'includes/paginator.html' %}
+    {% endif %}
   {% endblock %}
 
