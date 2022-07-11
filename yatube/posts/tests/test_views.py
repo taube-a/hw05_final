@@ -240,6 +240,7 @@ class PostsPagesTests(TestCase):
         self.assertNotIn(author2_post, user_follow_index)
 
     def test_user_cant_follow_or_unfollow_himself(self):
+        """Пользователь не сможет подписаться сам на себя."""
         self.authorized_client.post(
             reverse('posts:profile_follow',
                     kwargs={'username': self.user.username}))
