@@ -15,4 +15,3 @@ class PostAdmin(admin.ModelAdmin):
 admin.site.register(Group)
 admin.site.register(Comment)
 admin.site.register(Follow)
-
