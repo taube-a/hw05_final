@@ -123,3 +123,12 @@ class PostsURLTest(TestCase):
             response = self.guest_client.get(url, follow=True)
             self.assertRedirects(response,
                                  f'/auth/login/?next={url}')
+
+    def test_add_comment_url_redirect_anonymous_on_login(self):
+        """Страница по адресу posts/<int:pk>/comment/ перенаправит анонимного
+        пользователя на страницу логина.
+        """
+        response = self.guest_client.get(self.add_comment_url, follow=True)
+
+        self.assertRedirects(response, f'/auth/login/?next='
+                                       f'{self.add_comment_url}')
