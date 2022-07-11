@@ -23,6 +23,7 @@ class PostsPagesTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
+        cls.not_author = User.objects.create(username='not_author')
         cls.group = Group.objects.create(title='Тестовая группа',
                                          slug='test-slug',
                                          description='Тестовое описание', )
@@ -99,7 +100,6 @@ class PostsPagesTests(TestCase):
 
                     self.assertIsInstance(form_field, expected)
 
-    @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
     def test_index_group_list_profile_pages_show_correct_context(self):
         """Шаблоны index, group_list и profile сформируются с правильным
         контекстом.
@@ -180,35 +180,45 @@ class PostsPagesTests(TestCase):
     def test_cache(self):
         """Кеш работает корректно."""
         text = 'Пост для тестирвания корректной работы кэша.'
-        Post.objects.create(author=self.user, text=text)
-        content_with_new_post = self.authorized_client.get(self.index).content
+
+        new_post = Post.objects.create(author=self.user, text=text)
+        req = self.authorized_client.get(self.index)
+        content_with_new_post = req.content
+        latest_post = req.context['page_obj'].object_list[0]
+
+        self.assertEqual(new_post, latest_post)
+
         post_to_delete = Post.objects.get(author=self.user, text=text)
 
         post_to_delete.delete()
         cache_with_new_post = self.authorized_client.get(self.index).content
 
         self.assertEqual(content_with_new_post, cache_with_new_post)
+
         cache.clear()
         cache_without_post = self.authorized_client.get(self.index).content
+
         self.assertNotEqual(content_with_new_post, cache_without_post)
 
-    def test_auth_user_can_follow_and_unfollow_others(self):
-        """Пользователь может добвлять и удалять из подписок других
-        пользователей."""
-        not_author = User.objects.create(username='not_author')
-
+    def test_auth_user_can_follow_others(self):
+        """Пользователь может добвлять в подписки других пользователей."""
         self.authorized_client.post(
             reverse('posts:profile_follow',
-                    kwargs={'username': not_author.username}))
+                    kwargs={'username': self.not_author.username}))
 
         self.assertTrue(Follow.objects.filter(user=self.user,
-                                              author=not_author).exists())
+                                              author=self.not_author).
+                        exists())
+
+    def test_auth_user_canunfollow_others(self):
+        """Пользователь может добвлять в подписки других пользователей."""
         self.authorized_client.post(
             reverse('posts:profile_unfollow',
-                    kwargs={'username': not_author.username}))
+                    kwargs={'username': self.not_author.username}))
 
         self.assertFalse(Follow.objects.filter(user=self.user,
-                                               author=not_author).exists())
+                                               author=self.not_author).
+                         exists())
 
     def test_following_authors_in_following_page(self):
         """Новая запись появится в ленте только у тех, кто подписан на
@@ -217,9 +227,9 @@ class PostsPagesTests(TestCase):
         author2 = User.objects.create(username='Author2')
         text1 = 'Пост автора1'
         text2 = 'Пост автора2'
+
         author1_post = Post.objects.create(author=author1, text=text1)
         author2_post = Post.objects.create(author=author2, text=text2)
-
         self.authorized_client.post(
             reverse('posts:profile_follow',
                     kwargs={'username': author1.username}))
