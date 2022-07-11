@@ -8,8 +8,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-fm+e*d9u7_8)an&52^5tspq5m6n-f&mg3bz@)lrd+9uy^$4%$0'
 
 DEBUG = True
-# При False сервер запускать через manage.py runserver --insecure
-# Так не сбивается статика
 
 ALLOWED_HOSTS = ['localhost',
                  '127.0.0.1',

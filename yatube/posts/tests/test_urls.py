@@ -50,6 +50,7 @@ class PostsURLTest(TestCase):
         for url in self.URLS_for_test:
             with self.subTest(field=url):
                 response = self.guest_client.get(url)
+
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_public_urls_correct_template(self):
@@ -57,6 +58,7 @@ class PostsURLTest(TestCase):
         for url, template_name in self.URLS_for_test.items():
             with self.subTest(field=url):
                 response = self.guest_client.get(url)
+
                 self.assertTemplateUsed(response, template_name)
 
     def test_create_url_redirect_anonymous_on_login(self):
@@ -64,6 +66,7 @@ class PostsURLTest(TestCase):
         пользователя на страницу логина.
         """
         response = self.guest_client.get(self.create_url, follow=True)
+
         self.assertRedirects(response, f'/auth/login/?next={self.create_url}')
 
     def test_edit_url_redirect_nonauthor_on_post_detail(self):
@@ -71,6 +74,7 @@ class PostsURLTest(TestCase):
          поста на страницу поста.
         """
         response = self.nonauthor_client.get(self.post_edit_url, follow=True)
+
         self.assertRedirects(response, self.post_detail_url)
 
     def test_edit_url_redirect_guest_on_login(self):
@@ -79,6 +83,7 @@ class PostsURLTest(TestCase):
         """
         response = self.guest_client.get(self.post_edit_url,
                                          follow=True)
+
         self.assertRedirects(response,
                              f'/auth/login/?next={self.post_edit_url}')
 
@@ -87,6 +92,7 @@ class PostsURLTest(TestCase):
         пользователя на страницу логина.
         """
         response = self.guest_client.get(self.add_comment_url, follow=True)
+
         self.assertRedirects(response,
                              f'/auth/login/?next={self.add_comment_url}')
 
@@ -96,11 +102,13 @@ class PostsURLTest(TestCase):
         """
         response = self.nonauthor_client.get(self.add_comment_url,
                                              follow=True)
+
         self.assertRedirects(response, self.post_detail_url)
 
     def test_strange_url_return_404(self):
         """Несуществующая страница вернёт ошибку 404."""
         response = self.guest_client.get('/unexisting_page/')
+
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         self.assertTemplateUsed(response, 'core/404.html')
 
@@ -109,7 +117,9 @@ class PostsURLTest(TestCase):
         profile/<str:username>/unfollow/ перенаправят анонимного
         пользователя на страницу логина.
         """
-        for url in [self.follow_url, self.unfollow_url]:
+        un_follow_urls = (self.follow_url, self.unfollow_url)
+
+        for url in un_follow_urls:
             response = self.guest_client.get(url, follow=True)
             self.assertRedirects(response,
                                  f'/auth/login/?next={url}')

@@ -32,7 +32,8 @@ class Post(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name='Автор'
+        verbose_name='Автор',
+        related_name='posts',
     )
     group = models.ForeignKey(
         Group,
@@ -79,6 +80,8 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ('-created',)
+        verbose_name = 'комментарий'
+        verbose_name_plural = 'комментарии'
 
 
 class Follow(models.Model):
@@ -92,3 +95,9 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following',
     )
+
+    class Meta:
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписки'
+        constraints = [models.UniqueConstraint(fields=['user', 'author'],
+                                               name='unique_follow')]

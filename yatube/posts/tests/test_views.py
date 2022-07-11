@@ -78,6 +78,7 @@ class PostsPagesTests(TestCase):
         for reverse_name, template in templates_names.items():
             with self.subTest(reverse_name=reverse_name):
                 response = self.authorized_client.get(reverse_name)
+
                 self.assertTemplateUsed(response, template)
 
     def test_create_post_and_post_edit_show_correct_form_context(self):
@@ -95,6 +96,7 @@ class PostsPagesTests(TestCase):
             for value, expected in form_fields.items():
                 with self.subTest(value=value):
                     form_field = response.context.get('form').fields.get(value)
+
                     self.assertIsInstance(form_field, expected)
 
     @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
@@ -114,8 +116,10 @@ class PostsPagesTests(TestCase):
                        'Тестовая группа': post.group.title,
                        self.image: post.image.read(),
                        self.uploaded_image.size: post.image.size, }
+
             for expected_context, test_context in context.items():
                 with self.subTest(expected_context=expected_context):
+
                     self.assertEqual(expected_context, test_context)
 
     def test_profile_and_post_detail_page_show_correct_context(self):
@@ -123,6 +127,7 @@ class PostsPagesTests(TestCase):
         контекстом.
         """
         response = self.authorized_client.get(self.post_detail)
+
         self.assertEqual(response.context.get('post').text, 'Тестовый пост')
         self.assertEqual(response.context.get('post').group.title,
                          'Тестовая группа')
@@ -133,6 +138,7 @@ class PostsPagesTests(TestCase):
         """Тест паджинатора. На первой странице выведется 10 постов."""
         for name in self.names:
             response = self.client.get(name)
+
         self.assertEqual(len(response.context['page_obj']),
                          settings.POSTS_PER_PAGE)
 
@@ -144,6 +150,7 @@ class PostsPagesTests(TestCase):
             response = self.client.get(name + '?page=2')
             if name == reverse('posts:group_list',
                                kwargs={'slug': self.post.group.slug}):
+
                 self.assertEqual(len(response.context['page_obj']), 3)
             else:
                 self.assertEqual(len(response.context['page_obj']),
@@ -164,8 +171,10 @@ class PostsPagesTests(TestCase):
         test_post = response.context['page_obj'].object_list[0]
         context = {'Тестовый пост': test_post.text,
                    'Тестовая группа': test_post.group.title, }
+
         for expected_context, test_context in context.items():
             with self.subTest(expected_context=expected_context):
+
                 self.assertNotEqual(expected_context, test_context)
 
     def test_cache(self):
@@ -174,8 +183,10 @@ class PostsPagesTests(TestCase):
         Post.objects.create(author=self.user, text=text)
         content_with_new_post = self.authorized_client.get(self.index).content
         post_to_delete = Post.objects.get(author=self.user, text=text)
+
         post_to_delete.delete()
         cache_with_new_post = self.authorized_client.get(self.index).content
+
         self.assertEqual(content_with_new_post, cache_with_new_post)
         cache.clear()
         cache_without_post = self.authorized_client.get(self.index).content
@@ -189,11 +200,13 @@ class PostsPagesTests(TestCase):
         self.authorized_client.post(
             reverse('posts:profile_follow',
                     kwargs={'username': not_author.username}))
+
         self.assertTrue(Follow.objects.filter(user=self.user,
                                               author=not_author).exists())
         self.authorized_client.post(
             reverse('posts:profile_unfollow',
                     kwargs={'username': not_author.username}))
+
         self.assertFalse(Follow.objects.filter(user=self.user,
                                                author=not_author).exists())
 
@@ -212,6 +225,7 @@ class PostsPagesTests(TestCase):
                     kwargs={'username': author1.username}))
         user_follow_index = self.authorized_client.get(
             reverse('posts:follow_index')).context['page_obj']
+
         self.assertIn(author1_post, user_follow_index)
         self.assertNotIn(author2_post, user_follow_index)
 
@@ -221,4 +235,5 @@ class PostsPagesTests(TestCase):
                     kwargs={'username': self.user.username}))
         user_follow_index = self.authorized_client.get(
             reverse('posts:follow_index')).context['page_obj']
+
         self.assertNotIn(self.post, user_follow_index)

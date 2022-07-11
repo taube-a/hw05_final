@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% load cache %}
 
-{% block title %} {{ title }} {% endblock %}
+{% block title %}
+  {% if request.get_full_path == '/' %}
+    Последние обновления на сайте
+  {% else %}
+    Подписки
+  {% endif %}
+{% endblock %}
 
 
   {% block content %}

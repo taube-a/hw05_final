@@ -27,6 +27,8 @@ class PostModelTest(TestCase):
         group = self.group
         models_for_test = {post: post.text[:15],
                            group: group.title, }
+
         for model, expected_meaning in models_for_test.items():
             with self.subTest(field=model):
+
                 self.assertEqual(str(model), expected_meaning)
