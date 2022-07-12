@@ -9,10 +9,3 @@ def add_paginator(request, post_list):
     page_number = request.GET.get('page')
     return paginator.get_page(page_number)
 
-
-def get_following_list(user):
-    user_following = Follow.objects.filter(user=user)
-    following_list = []
-    for follow in user_following:
-        following_list.append(follow.author)
-    return following_list
