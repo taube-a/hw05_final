@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-
+from taggit.managers import TaggableManager
 
 User = get_user_model()
 
@@ -21,6 +21,7 @@ class Group(models.Model):
 
 
 class Post(models.Model):
+    """Таблица Посты."""
     title = models.CharField(verbose_name='Заголовок', max_length=200,
                              unique=False)
     text = models.TextField(
@@ -52,6 +53,8 @@ class Post(models.Model):
         upload_to='posts/',
         blank=True
     )
+
+    tags = TaggableManager('Теги', blank=True, help_text='Введите теги', )
 
     class Meta:
         ordering = ('-pub_date',)

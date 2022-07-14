@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'taggit',
     'debug_toolbar',
     'sorl.thumbnail',
 
@@ -128,3 +129,5 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
+
+TAGGIT_CASE_INSENSITIVE = True

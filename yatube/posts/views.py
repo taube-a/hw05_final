@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
+from taggit.models import Tag
 
 from .forms import PostForm, CommentForm
 from .models import Group, Post, User, Follow
@@ -51,6 +52,7 @@ def create_post(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            form.save_m2m()
             return redirect('posts:profile', username=request.user.username)
     return render(request, 'posts/create_post.html', {'form': form})
 
@@ -64,6 +66,7 @@ def post_edit(request, pk):
         if request.method == 'POST':
             if form.is_valid():
                 form.save()
+                form.save_m2m()
                 return redirect('posts:post_detail', pk=pk)
         context = {'form': form, 'is_edit': True}
         return render(request, 'posts/create_post.html', context)
@@ -105,3 +108,11 @@ def profile_unfollow(request, username):
     if follow_record.exists():
         follow_record.delete()
     return redirect('posts:profile', username=username)
+
+
+def tag_posts(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    post_list = Post.objects.filter(tags__in=[tag])
+    context = {'tag': tag,
+               'page_obj': add_paginator(request, post_list), }
+    return render(request, 'posts/tag_list.html', context)
