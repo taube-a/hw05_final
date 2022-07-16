@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 
 
-{% block title %} Профайл пользователя {{ name }} {% endblock %}
+{% block title %} {{ group }} пользователя {{ author }} {% endblock %}
 
 {% block content %}
   <div class="row">
     <div class="col-10">
-      <h1>Все посты пользователя {{ author }}</h1>
-      <h3>Всего постов: {{ count }}</h3>
+      <h1>{{ group }} пользователя {{ author }}</h1>
       {% if user.username != author.username and user.is_authenticated %}
         {% if following %}
           <a

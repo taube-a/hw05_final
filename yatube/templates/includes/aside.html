@@ -5,9 +5,10 @@
     </li>
     {% if post.group and not group %}
     <li class="list-group-item">
-      Группа: {{ post.group.title }}
-        <a href="{% url 'posts:group_list' post.group.slug %}">все записи
-          группы</a>
+      Группа:
+      <a href="{% url 'posts:group_list' post.group.slug %}">
+        {{ post.group.title }}
+      </a>
     </li>
     {% endif %}
     <li class="list-group-item">

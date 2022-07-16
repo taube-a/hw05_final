@@ -7,6 +7,9 @@ from .models import Group, Post, User, Follow
 from .utils import add_paginator
 
 
+GROUPS = Group.objects.all()
+
+
 def index(request):
     post_list = Post.objects.all()
     context = {'page_obj': add_paginator(request, post_list), }
@@ -26,7 +29,8 @@ def profile(request, username):
     posts_list = author.posts.all()
     context = {'author': author,
                'count': posts_list.count(),
-               'page_obj': add_paginator(request, posts_list), }
+               'page_obj': add_paginator(request, posts_list),
+               'groups': GROUPS, }
     if request.user.is_authenticated:
         if request.user.follower.filter(author=author).exists():
             context['following'] = True
@@ -52,7 +56,6 @@ def create_post(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            form.save_m2m()
             return redirect('posts:profile', username=request.user.username)
     return render(request, 'posts/create_post.html', {'form': form})
 
@@ -66,7 +69,6 @@ def post_edit(request, pk):
         if request.method == 'POST':
             if form.is_valid():
                 form.save()
-                form.save_m2m()
                 return redirect('posts:post_detail', pk=pk)
         context = {'form': form, 'is_edit': True}
         return render(request, 'posts/create_post.html', context)
@@ -116,3 +118,24 @@ def tag_posts(request, tag_slug):
     context = {'tag': tag,
                'page_obj': add_paginator(request, post_list), }
     return render(request, 'posts/tag_list.html', context)
+
+
+def group_filter(request, username):
+    group_slug = get_object_or_404(Group, id=request.POST['groups']).slug
+    return redirect('posts:profile_group', username=username,
+                    group_slug=group_slug)
+
+
+def profile_group(request, username, group_slug):
+    author = get_object_or_404(User, username=username)
+    group = get_object_or_404(Group, slug=group_slug)
+    posts_list = author.posts.filter(group=group, author=author)
+    context = {'group': group,
+               'author': author,
+               'count': posts_list.count(),
+               'page_obj': add_paginator(request, posts_list),
+               'groups': GROUPS, }
+    if request.user.is_authenticated:
+        if request.user.follower.filter(author=author).exists():
+            context['following'] = True
+    return render(request, 'posts/profile_group.html', context)
