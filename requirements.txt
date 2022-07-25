@@ -12,3 +12,4 @@ django-debug-toolbar==3.2.4
 pytils
 django-taggit
 Unidecode
+django-ckeditor

@@ -8,7 +8,7 @@
     <img class="card-img my-2" src="{{ im.url }}">
   {% endthumbnail %}
 
-  <p>{{ post.text }}</p>
+  <p>{{ post.text|safe }}</p>
 
   {% if post.tags.first != None %}
     <p>Теги:

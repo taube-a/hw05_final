@@ -24,6 +24,7 @@
                   action="{% url 'posts:add_comment' post.pk %}"
             >
               {% csrf_token %}
+              {{ form.media }}
 
               <div class="form-group mb-2">
                 {% for field in form %}
@@ -45,7 +46,7 @@
               </a>
             </h5>
               <p>
-               {{ comment.text }}
+               {{ comment.text|safe }}
               </p>
             </div>
           </div>

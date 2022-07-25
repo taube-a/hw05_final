@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'taggit',
     'debug_toolbar',
     'sorl.thumbnail',
+    'ckeditor',
 
     'about',
     'core',

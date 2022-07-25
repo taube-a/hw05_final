@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from taggit.managers import TaggableManager
+from ckeditor.fields import RichTextField
 
 from .ru_taggit import RuTaggedItem
 
@@ -26,7 +27,7 @@ class Post(models.Model):
     """Таблица Посты."""
     title = models.CharField(verbose_name='Заголовок', max_length=200,
                              unique=False)
-    text = models.TextField(
+    text = RichTextField(
         'Текст поста',
         help_text='Введите текст поста'
     )
@@ -81,7 +82,7 @@ class Comment(models.Model):
         related_name='comments',
         verbose_name='Автор комментария'
     )
-    text = models.TextField(verbose_name='Текст')
+    text = RichTextField(verbose_name='Текст')
     created = models.DateTimeField(verbose_name='Дата публикации',
                                    auto_now_add=True)
 
