@@ -18,4 +18,3 @@ class RuTaggedItem(TaggedItem):
     @classmethod
     def tag_model(cls):
         return RuTag
-

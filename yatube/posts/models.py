@@ -56,7 +56,7 @@ class Post(models.Model):
         blank=True
     )
 
-    tags = TaggableManager(through=RuTaggedItem, blank=True,)
+    tags = TaggableManager('Тег', through=RuTaggedItem, blank=True,)
 
     class Meta:
         ordering = ('-pub_date',)
