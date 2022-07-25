@@ -56,6 +56,7 @@ def create_post(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            form.save_m2m()
             return redirect('posts:profile', username=request.user.username)
     return render(request, 'posts/create_post.html', {'form': form})
 
@@ -68,7 +69,8 @@ def post_edit(request, pk):
     if request.user == post.author:
         if request.method == 'POST':
             if form.is_valid():
-                form.save()
+                form.save(commit=False)
+                form.save_m2m()
                 return redirect('posts:post_detail', pk=pk)
         context = {'form': form, 'is_edit': True}
         return render(request, 'posts/create_post.html', context)

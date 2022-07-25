@@ -1,5 +1,7 @@
 import os.path
 
+import unidecode
+
 from pathlib import Path
 
 
@@ -130,4 +132,4 @@ CACHES = {
     }
 }
 
-TAGGIT_CASE_INSENSITIVE = True
+SLUG_TRANSLITERATOR = unidecode.unidecode

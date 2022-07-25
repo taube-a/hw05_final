@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from taggit.managers import TaggableManager
 
+from .ru_taggit import RuTaggedItem
+
 User = get_user_model()
 
 
@@ -54,7 +56,7 @@ class Post(models.Model):
         blank=True
     )
 
-    tags = TaggableManager('Теги', blank=True, help_text='Введите теги', )
+    tags = TaggableManager(through=RuTaggedItem, blank=True,)
 
     class Meta:
         ordering = ('-pub_date',)
