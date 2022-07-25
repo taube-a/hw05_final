@@ -4,8 +4,10 @@
 {% block title %}
   {% if request.get_full_path == '/' %}
     Последние обновления на сайте
-  {% else %}
+  {% elif request.get_full_path == '/follow/' %}
     Подписки
+  {% else %}
+    Результаты поиска
   {% endif %}
 {% endblock %}
 
@@ -34,4 +36,3 @@
         {% include 'includes/paginator.html' %}
     {% endif %}
   {% endblock %}
-

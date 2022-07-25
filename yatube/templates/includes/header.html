@@ -9,6 +9,14 @@
              class="d-inline-block align-top">
         <span style="color:red">Ya</span>blog</a>
       </a>
+
+       <form method="post" enctype="multipart/form-data"
+             action="{% url 'posts:post_search_filter' %}">
+         {% csrf_token %}
+         <input type="text" placeholder="Поиск по сайту" name="search">
+         <input type="submit" value="Поиск">
+       </form>
+
         <ul class="nav nav-pills">
           <li class="nav-item">
             <a class="nav-link {% if view_name  == 'about:author' %}active{% endif %}"

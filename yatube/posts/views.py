@@ -141,3 +141,14 @@ def profile_group(request, username, group_slug):
         if request.user.follower.filter(author=author).exists():
             context['following'] = True
     return render(request, 'posts/profile_group.html', context)
+
+
+def post_search_filter(request):
+    text = request.POST['search']
+    return redirect('posts:post_search', text=text)
+
+
+def post_search(request, text):
+    post_list = Post.objects.filter(text__contains=text)
+    context = {'page_obj': add_paginator(request, post_list), }
+    return render(request, 'posts/index.html', context)
