@@ -1,3 +1,27 @@
-# hw05_final
+# YaTube
 
-[![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
+***
+
+## Описание
+Учебный проект социальной сети для публикации личных дневников. Сервис поддерживает 
+возможности:
+- отправление постов (с публикацией изображений и категоризацией по 
+существующим тегам); 
+- отправление комментариев к постам;
+- подписка на интересующих авторов.
+
+***
+
+### Технологии
+- Python 3.x
+- Django 3.2
+- SQL
+
+Полный перечень библиотек указан в файле requirements.txt
+
+***
+
+Также для проекта доступно [API](https://github.com/taube-a/api_final_yatube) 
+
+
+Автор: [Анастасия Таубе](https://github.com/taube-a)
