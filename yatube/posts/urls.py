@@ -10,8 +10,6 @@ urlpatterns = [
 
     path('posts/search/', views.post_search_filter,
          name='post_search_filter'),
-    path('posts/search/<str:text>/', views.post_search,
-         name='post_search'),
 
     path('group/<slug:slug>/', views.group_posts, name='group_list'),
     path('profile/<str:username>/', views.profile, name='profile'),
@@ -28,6 +26,4 @@ urlpatterns = [
     path('profile/<str:username>/<slug:group_slug>/', views.profile_group,
          name='profile_group'),
     path('tag/<slug:tag_slug>/', views.tag_posts, name='tag_list'),
-
-
 ]

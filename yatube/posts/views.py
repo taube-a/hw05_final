@@ -69,8 +69,7 @@ def post_edit(request, pk):
     if request.user == post.author:
         if request.method == 'POST':
             if form.is_valid():
-                form.save(commit=False)
-                form.save_m2m()
+                form.save()
                 return redirect('posts:post_detail', pk=pk)
         context = {'form': form, 'is_edit': True}
         return render(request, 'posts/create_post.html', context)
@@ -144,11 +143,10 @@ def profile_group(request, username, group_slug):
 
 
 def post_search_filter(request):
-    text = request.POST['search']
-    return redirect('posts:post_search', text=text)
-
-
-def post_search(request, text):
-    post_list = Post.objects.filter(text__contains=text)
+    try:
+        text = request.POST['search']
+        post_list = Post.objects.filter(text__contains=text)
+    except: 
+        post_list = Post.objects.all()
     context = {'page_obj': add_paginator(request, post_list), }
     return render(request, 'posts/index.html', context)
